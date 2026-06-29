@@ -1,0 +1,184 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * RecruitIQ design system.
+ * Two surfaces: dark landing gateway + light recruiter tool.
+ * All values pinned to spec — do not introduce intermediate scale steps.
+ */
+
+@theme inline {
+  --radius-sm: 6px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-xl: 10px;
+  --radius-2xl: 10px;
+  --radius-3xl: 10px;
+  --radius-4xl: 10px;
+
+  /* Landing-only dark palette */
+  --color-land-bg: var(--land-bg);
+  --color-land-card: var(--land-card);
+  --color-land-border: var(--land-border);
+  --color-land-muted: var(--land-muted);
+
+  /* Global light palette */
+  --color-ink: var(--ink);
+  --color-surface: var(--surface);
+  --color-panel: var(--panel);
+  --color-border: var(--border);
+  --color-muted: var(--muted);
+
+  /* Accent + signal system */
+  --color-accent: var(--accent);
+  --color-accent-dim: var(--accent-dim);
+  --color-signal-green: var(--signal-green);
+  --color-signal-green-dim: var(--signal-green-dim);
+  --color-signal-red: var(--signal-red);
+  --color-signal-red-dim: var(--signal-red-dim);
+  --color-signal-amber: var(--signal-amber);
+  --color-signal-amber-dim: var(--signal-amber-dim);
+
+  /* Shadcn token bridge (kept for any future shadcn primitives) */
+  --color-background: var(--surface);
+  --color-foreground: var(--ink);
+  --color-card: var(--panel);
+  --color-card-foreground: var(--ink);
+  --color-popover: var(--panel);
+  --color-popover-foreground: var(--ink);
+  --color-primary: var(--accent);
+  --color-primary-foreground: #ffffff;
+  --color-secondary: var(--accent-dim);
+  --color-secondary-foreground: var(--accent);
+  --color-muted-foreground: var(--muted);
+  --color-accent-foreground: var(--accent);
+  --color-destructive: var(--signal-red);
+  --color-destructive-foreground: #ffffff;
+  --color-input: var(--border);
+  --color-ring: var(--accent);
+  --color-ring-offset-background: var(--surface);
+
+  /* Typography */
+  --font-display: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+:root {
+  /* Landing dark */
+  --land-bg: #09090C;
+  --land-card: #111318;
+  --land-border: #1F2128;
+  --land-muted: #4B5263;
+
+  /* Light tool */
+  --ink: #0D0F12;
+  --surface: #F4F6F9;
+  --panel: #FFFFFF;
+  --border: #E3E7EE;
+  --muted: #6B7280;
+
+  /* Accent */
+  --accent: #2563EB;
+  --accent-dim: #DBEAFE;
+  --signal-green: #16A34A;
+  --signal-green-dim: #DCFCE7;
+  --signal-red: #DC2626;
+  --signal-red-dim: #FEE2E2;
+  --signal-amber: #D97706;
+  --signal-amber-dim: #FEF3C7;
+
+  --radius: 10px;
+
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.07), 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-elevated: 0 4px 24px rgba(0, 0, 0, 0.10), 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html,
+  body {
+    background-color: var(--color-surface);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/*
+ * Signature element — scanning border.
+ * A conic gradient rotates around a 1px frame on landing role cards.
+ * Pure CSS, no JS. Accelerates on hover.
+ */
+@property --scan-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes scan-rotate {
+  to {
+    --scan-angle: 360deg;
+  }
+}
+
+.scan-card {
+  position: relative;
+  background: var(--land-card);
+  border-radius: 10px;
+  isolation: isolate;
+  transition: transform 150ms ease-out;
+}
+
+.scan-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from var(--scan-angle),
+    rgba(255, 255, 255, 0.04) 0deg,
+    rgba(255, 255, 255, 0.04) 270deg,
+    rgba(96, 165, 250, 0.9) 330deg,
+    rgba(191, 219, 254, 1) 350deg,
+    rgba(96, 165, 250, 0.9) 360deg
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: scan-rotate 4s linear infinite;
+  opacity: 0.55;
+  transition: opacity 200ms ease-out, animation-duration 200ms ease-out;
+  pointer-events: none;
+}
+
+.scan-card:hover {
+  transform: translateY(-3px);
+}
+
+.scan-card:hover::before {
+  opacity: 1;
+  animation-duration: 0.8s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scan-card,
+  .scan-card::before {
+    transition: none;
+    animation: none;
+  }
+}
