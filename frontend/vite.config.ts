@@ -6,4 +6,12 @@
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
-export default defineConfig({});
+// Use port 5173 locally to avoid clashing with services like SearXNG that
+// commonly bind to 8080. In the Lovable sandbox, the config's own sandbox
+// detection overrides this with the required port/host.
+export default defineConfig({
+  vite: {
+    server: { host: "127.0.0.1", port: 5173, strictPort: false },
+    preview: { host: "127.0.0.1", port: 5173, strictPort: false },
+  },
+});
